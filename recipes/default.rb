@@ -26,6 +26,11 @@ if platform?("ubuntu", "debian")
     action :install
   end
 
+  execute "Generate locale" do
+    command "locale-gen #{lang}"
+    not_if { `locale -a`.include? lang }
+  end
+
   execute "Update locale" do
     command "update-locale LANG=#{lang} LC_ALL=#{lc_all}"
     not_if { Locale.up_to_date?("/etc/default/locale", lang, lc_all) }
